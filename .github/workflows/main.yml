@@ -22,4 +22,4 @@ jobs:
           aws-region: us-east-1
 
       - name: Sync with s3 bucket test
-        run: aws s3 sync . ${{ secrets.S3_BUCKET_NAME }} --exclude ".gitignore" --exclude ".git/*" --exclude ".github/*" --delete
+        run: aws s3 sync . ${{ secrets.S3_BUCKET_NAME }} --delete --exclude ".gitignore" --exclude ".git/*" --exclude ".github/*"
