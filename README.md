@@ -1,0 +1,1 @@
+![badge](https://github.com/JayGhb/cloudResume-frontend/workflows/FrontednCD/badge.svg)
