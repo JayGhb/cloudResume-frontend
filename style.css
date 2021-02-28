@@ -347,10 +347,11 @@ main section#projects .project-container {
 main section#projects .project-container .project-tile a img {
   width: 100%;
   height: auto;
-  filter: grayscale(100%);
+  /*filter: grayscale(100%);*/
 }
 main section#projects .project-container .project-tile a img:hover {
-  filter: grayscale(0);
+  /*filter: grayscale(0);*/
+  transform: scale(1.1);
 }
 
 @media screen and (min-width: 480px) {
