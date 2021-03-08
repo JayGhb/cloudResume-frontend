@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+    <title>Cloud Resume Project</title>
+    <link rel="stylesheet" type="text/css" href="../style.css">
+    <link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/e8635f230f.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+  crossorigin="anonymous"></script>
+    <script src="../js/script.js"></script>
+  </head>
+  
+  <body>
+    <header>
+      <nav id="navbar">
+        <div class="portrait">
+          <img src="../images/ghbprof.jpg" alt="portrait" />
+        </div>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#architecture">Architecture</a></li>
+          <li><a href="#iac">Infrastructure as Code</a></li>
+          <li><a href="#cicd">CI/CD</a></li>
+          <li style="text-align: center;"><a href="#personaladditions">Personal additions: <br/> Securing the infrastructure</a></li>
+          <li><a href="#finalthoughts">Final thoughts</a></li>
+          <li><a href="../index.html"><i class="fas fa-home"></i></a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="cloudresumemain">
+
+      <section id="about">
+        <h1 class="section-heading">About</h1>
+        <p>
+          It was not very long after I took up AWS that I started looking for practical 
+          projects to get some experience and learn efficiently. And I was able to find 
+          my starting point for AWS projects in the AWS subreddit, in the form of a comment
+          mentioning <a href="https://cloudirregular.substack.com/p/the-cloud-resume-challenge" target="_blank">the cloud resume challenge</a>. <br/> <br/>
+
+          Up until then most of my studying revolved around AWS Cloud Practitioner study
+          material from various sources as well as revising networking fundamentals on subnetting, CIDR, DNS 
+          and other concepts that were deemed necessary.<br/> <br/>
+
+          Although the challenge time frame was already overdue, I picked up the project
+          for the learning aspect of it.<br/><br/>
+
+          That being said, following is an overview of the technologies used to power this 
+          particular website.
+        </p>
+        
+      </section>
+      <section id="architecture">
+        <h1 class="section-heading">Architecture</h1>
+        <p>
+          Starting things of, presented below is the architecture of the project.
+          The static website is hosted on Amazon S3. <br/><br/>
+
+          Its contents are cached in various locations through CloudFront, the service used 
+          as the Content Delivery Network. CloudFront also provides secure access to the website 
+          via HTTPS.<br/><br/>
+
+          On page load, a REST API endpoint is invoked for the website's visitors counter
+          which triggers a Lambda function written in Python. The Lambda in turn, updates the 
+          visitors counter entry in DynamoDB and returns the updated value back to the website.
+          Lastly, Route53 is used as the DNS and is also the service I used for the domain
+          registration. <br/> <br/>
+
+          This infastructure's DynamoDB was my first interaction with a NoSQL database. As the
+          project's database requirements are minimal, to get more familiar with it, I followed
+          along tutorials and experimented in general with it using DynamoDB Local, again with 
+          Python and it's Boto3 library.
+          <br/><br/>
+          
+        </p>
+
+        <img src="../images/projects/architecture.png" alt="projectarchitecture" class="architecture">
+
+      </section>
+      <section id="iac">
+        <h1 class="section-heading">Infrastructure as Code</h1>
+        <p>
+          The infrastructure is created, built and deployed using the AWS Serverless Application
+          Model (SAM). SAM, AWS Cloudformation and the Infrastructure as Code (IaC) concept in general
+          was something new to me. Throughout my studying time prior to this project, it had
+          occurred to me several times that setting up "real world" infrastructures via the AWS 
+          console alone had to be fairly difficult and then IaC came to fill that exact spot.
+          <br/> <br/>
+          To get started, I referred to the AWS documentation for SAM as well as to various sources
+          regarding configurations for the services I was interested in and more. 
+          And after attempting several templates and builds, I settled with the one that now resides
+          in the <a href="https://github.com/JayGhb/cloudResume-backend/blob/master/template.yaml" target="_blank"> project's backend GitHub repository</a>.
+        </p>
+      </section>
+
+      <section id="cicd">
+        <h1 class="section-heading">CI/CD</h1>
+        <p>
+            The project's services are provisioned via a CI/CD pipeline built using GitHub Actions while a 
+            Continuous Deployment process is also in place for the frontend content. <br/> <br/>
+
+            Popular CI/CD services like Jenkins and AWS CodePipeline had made their presence known to me
+            through content I consumed and even job descriptions. But I decided to grasp the opportunity to also
+            learn more on the meaning of the badges one frequently sees on GitHub repositories and went with
+            GitHub Actions.
+            <br/><br/>
+            <img src="../images/projects/badge.svg" alt="githubBadge" title="Passing badge" />
+            <br/><br/>
+            Following a similar fashion, after reading on GitHub docs and around the internet about
+            what GitHub Actions are, how they work, how to use actions created by others or how to create
+            your own, playing around with it got me settled with the ones present in the  
+            <a href="https://github.com/JayGhb/cloudResume-backend/tree/master/.github/workflows" target="_blank">backend</a> and 
+            <a href="https://github.com/JayGhb/cloudResume-frontend/tree/master/.github/workflows" target="_blank">frontend</a> 
+            repositories.
+        </p>
+      </section>
+
+      <section id="personaladditions">
+        <h1 class="section-heading">Personal additions: Securing the infrastructure</h1>
+        <p>
+          So all was set and manoloui.com was live and securely served through CloudFront, or so I thought.
+          It was not long until I realized that configuring an S3 bucket for website hosting allowed access to 
+          the bucket's contents via http even though a CloudFront distribution was already up and pointing to the
+          bucket's endpoint. <br/> <br/>
+
+          Searching how to resolve this I encountered so many more posts/tutorials on "how to host a static website on S3"
+          that did not address this issue at all. AWS documentation provided the answer once more by introducing me to 
+          <a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html" target="_blank"> CloudFront's Origin Access Identity</a> (OAI). <br/> <br/>
+
+          This approach however takes away some of the website-configured S3 bucket's features like the default index and error
+          pages which essentially meant that the only way to display the website was appending "/index.html" to the website's domain
+          name while the custom error page was not applied at all. <br/> <br/>
+
+          It turned out this was pretty easy to solve through CloudFront's <a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/DefaultRootObject.html" target="_blank"> default root object</a> and <a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValuesErrorPages" target="_blank">custom error pages</a>.
+          Setting those up provided the exact same outcome as the website-configured S3 bucket while restricting access to the bucket
+          making its contents available only via CloudFront.
+          <br/><br/>
+
+          The second part of the infrastructure to be secured was the REST API endpoint provided by API Gateway to trigger the
+          visitors counter Lambda Function. <br/>
+          Taking on this challenge after its official deadline was due had its perks as I was able to find Chris Nagy's <a href="https://not-blog.heyitschris.com/the-story-of-my-possibly-denial-of-wallet-attack-on-aws-serverless-ckddlds1u011oxvs1d873fhsy" target="_blank"> blogpost</a>
+          on his possible Denial of Wallet attack, on his own cloud-resume website.<br/><br/>
+
+          This turned into a good opportunity to learn about API Throttling algorithms like Fixed Window or the Token Bucket used by AWS
+          before opting to limit my endpoint's default rate and burst limits through the AWS console.
+        </p>
+      </section>
+
+      <section id="finalthoughts">
+        <h1 class="section-heading">Final thoughts</h1>
+        <p>
+            This project honestly presented a refreshing challenge. It motivated me to do a lot of reading and 
+            to use the Infrastructure as Code and GitHub Actions CI/CD processes for the first time.
+            It was also an opportunity to get practical with AWS and to learn to integrate a number of
+            services with one another while also encountering and keeping a lot of useful resources
+            for future reference.<br/> <br/>
+
+            I genuinely enjoyed this project and it made me eager to try the next one on AWS.
+            Finally, big thanks to the challenge's open source community for hosting the challenge and providing
+            their findings openly for everyone.
+        </p>
+      </section>
+
+    </main>
+    <footer></footer>
+  </body>
+  </html>
+  
