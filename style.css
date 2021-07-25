@@ -407,7 +407,7 @@ main section#projects .project-container .project-tile a img:hover {
 @media screen and (min-width: 1024px) {
   body {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: min-content auto;
   }
 
   header {
